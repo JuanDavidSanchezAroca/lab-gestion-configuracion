@@ -32,6 +32,11 @@ jobs:
         service_account_key: ${{ secrets.GOOGLE_CREDENTIALS }}
         project_id: ${{ secrets.GCP_PROJECT_ID }}
 
+    - name: Write Google credentials to file
+      run: |
+        echo "${{ secrets.GOOGLE_CREDENTIALS }}" > gcp-key.json
+        cat gcp-key.json
+
     - name: Initialize Terraform
       run: terraform init
 
