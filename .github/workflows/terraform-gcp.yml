@@ -1,0 +1,40 @@
+name: Apply Terraform changes
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    env:
+      GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GCP_REGION: ${{ secrets.GCP_REGION }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.1.0
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        service_account_key: ${{ secrets.GOOGLE_CREDENTIALS }}
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+    - name: Initialize Terraform
+      run: terraform init
+
+    - name: Plan Terraform changes
+      run: terraform plan
+
+    - name: Apply Terraform changes
+      if: github.ref == 'refs/heads/main'
+      run: terraform apply -auto-approve
