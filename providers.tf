@@ -5,7 +5,7 @@ provider "google" {
 }
 
 variable "google_credentials" {
-  type = string
+  type = file
 }
 
 variable "project" {
