@@ -31,8 +31,8 @@ jobs:
 
     - name: Write Google credentials to file
       run: |
-        echo "${{ secrets.GOOGLE_CREDENTIALS }}" > gcp-key.json
-        cat gcp-key.json
+          echo "{\"google_credentials\": \"${{ secrets.GOOGLE_CREDENTIALS }}\"}" > gcp-key.json
+          cat gcp-key.json
 
     - name: Initialize Terraform
       run: terraform init
