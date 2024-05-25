@@ -1,5 +1,5 @@
 provider "google" {
-  credentials = var.google_credentials
+  credentials = file(var.google_credentials)
   project     = var.project
   region      = var.region
 }
@@ -9,13 +9,16 @@ variable "google_credentials" {
 }
 
 variable "project" {
+  type    = string
   default = "user-ilnggwfapqsi"
 }
 
 variable "region" {
+  type    = string
   default = "us-central1"
 }
 
 variable "zone" {
+  type    = string
   default = "us-central1-a"
 }
