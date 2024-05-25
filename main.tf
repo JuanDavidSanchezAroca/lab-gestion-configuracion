@@ -1,5 +1,12 @@
+data "google_compute_network" "vpc_network_existing" {
+  name = "terraform-network"
+}
+
 resource "google_compute_network" "vpc_network" {
   name = "terraform-network"
+
+  # Verificar si la red ya existe
+  count = length(data.google_compute_network.vpc_network_existing) > 0 ? 0 : 1
 }
 
 resource "google_compute_instance" "vm_instance" {
@@ -14,7 +21,7 @@ resource "google_compute_instance" "vm_instance" {
   }
 
   network_interface {
-    network = google_compute_network.vpc_network.self_link
+    network = google_compute_network.vpc_network[0].self_link
   }
 
   metadata_startup_script = <<-EOT
@@ -26,13 +33,9 @@ resource "google_compute_instance" "vm_instance" {
   EOT
 }
 
-resource "google_compute_address" "external_ip" {
-  name = "external-ip"
-}
-
 resource "google_compute_firewall" "allow_ssh" {
   name    = "allow-ssh"
-  network = google_compute_network.vpc_network.self_link
+  network = google_compute_network.vpc_network[0].self_link
 
   allow {
     protocol = "tcp"
@@ -44,7 +47,7 @@ resource "google_compute_firewall" "allow_ssh" {
 
 resource "google_compute_firewall" "allow_tcp_5000" {
   name    = "allow-tcp-5000"
-  network = google_compute_network.vpc_network.self_link
+  network = google_compute_network.vpc_network[0].self_link
 
   allow {
     protocol = "tcp"
@@ -55,5 +58,5 @@ resource "google_compute_firewall" "allow_tcp_5000" {
 }
 
 output "instance_ip" {
-  value = google_compute_address.external_ip.address
+  value = google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip
 }
