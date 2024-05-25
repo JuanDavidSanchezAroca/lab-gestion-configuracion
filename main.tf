@@ -52,5 +52,5 @@ resource "google_compute_firewall" "allow_tcp_5000" {
 }
 
 output "instance_ip" {
-  value = google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip
+  value = length(google_compute_instance.vm_instance.network_interface[0].access_config) > 0 ? google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip : null
 }
