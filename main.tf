@@ -15,7 +15,6 @@ resource "google_compute_instance" "vm_instance" {
 
   network_interface {
     network = google_compute_network.vpc_network.self_link
-    # El campo self_link proporciona la URL completa de la red, que es necesaria para conectar la instancia a la red.
   }
 
   metadata_startup_script = <<-EOT
@@ -25,6 +24,10 @@ resource "google_compute_instance" "vm_instance" {
     echo 'print("Hello, World!")' > app.py
     nohup python3 app.py &
   EOT
+}
+
+resource "google_compute_address" "external_ip" {
+  name = "external-ip"
 }
 
 resource "google_compute_firewall" "allow_ssh" {
@@ -52,5 +55,5 @@ resource "google_compute_firewall" "allow_tcp_5000" {
 }
 
 output "instance_ip" {
-  value = length(google_compute_instance.vm_instance.network_interface[0].access_config) > 0 ? google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip : null
+  value = google_compute_address.external_ip.address
 }
