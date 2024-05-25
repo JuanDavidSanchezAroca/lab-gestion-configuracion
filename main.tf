@@ -14,11 +14,8 @@ resource "google_compute_instance" "vm_instance" {
   }
 
   network_interface {
-    network = google_compute_network.vpc_network.name
-
-    access_config {
-      // Include this section to give the VM an external IP address
-    }
+    network = google_compute_network.vpc_network.self_link
+    # El campo self_link proporciona la URL completa de la red, que es necesaria para conectar la instancia a la red.
   }
 
   metadata_startup_script = <<-EOT
@@ -32,7 +29,7 @@ resource "google_compute_instance" "vm_instance" {
 
 resource "google_compute_firewall" "allow_ssh" {
   name    = "allow-ssh"
-  network = google_compute_network.vpc_network.name
+  network = google_compute_network.vpc_network.self_link
 
   allow {
     protocol = "tcp"
@@ -44,7 +41,7 @@ resource "google_compute_firewall" "allow_ssh" {
 
 resource "google_compute_firewall" "allow_tcp_5000" {
   name    = "allow-tcp-5000"
-  network = google_compute_network.vpc_network.name
+  network = google_compute_network.vpc_network.self_link
 
   allow {
     protocol = "tcp"
