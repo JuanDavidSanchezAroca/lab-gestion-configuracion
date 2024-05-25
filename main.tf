@@ -1,21 +1,3 @@
-provider "google" {
-  credentials = var.google_credentials
-  project     = var.project
-  region      = var.region
-}
-
-variable "project" {
-  default = "<YOUR_PROJECT_ID>"
-}
-
-variable "region" {
-  default = "us-central1"
-}
-
-variable "zone" {
-  default = "us-central1-a"
-}
-
 resource "google_compute_network" "vpc_network" {
   name = "terraform-network"
 }
