@@ -48,6 +48,30 @@ resource "google_compute_instance" "vm_instance" {
   EOT
 }
 
+resource "google_compute_firewall" "allow_ssh" {
+  name    = "allow-ssh"
+  network = google_compute_network.vpc_network.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+}
+
+resource "google_compute_firewall" "allow_tcp_5000" {
+  name    = "allow-tcp-5000"
+  network = google_compute_network.vpc_network.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["5000"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+}
+
 output "instance_ip" {
   value = google_compute_instance.vm_instance.network_interface[0].access_config[0].nat_ip
 }
