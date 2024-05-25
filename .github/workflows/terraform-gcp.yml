@@ -33,8 +33,17 @@ jobs:
       run: terraform init
 
     - name: Plan Terraform changes
-      run: terraform plan -var="google_credentials=${{ secrets.GOOGLE_CREDENTIALS }}" -var="project=${{ secrets.GCP_PROJECT_ID }}" -var="region=${{ secrets.GCP_REGION }}"
+      run: |
+        terraform plan \
+          -var="google_credentials=${{ secrets.GOOGLE_CREDENTIALS }}" \
+          -var="project=${{ secrets.GCP_PROJECT_ID }}" \
+          -var="region=${{ secrets.GCP_REGION }}"
 
     - name: Apply Terraform changes
       if: github.ref == 'refs/heads/main'
-      run: terraform apply -var="google_credentials=${{ secrets.GOOGLE_CREDENTIALS }}" -var="project=${{ secrets.GCP_PROJECT_ID }}" -var="region=${{ secrets.GCP_REGION }}" -auto-approve
+      run: |
+        terraform apply \
+          -var="google_credentials=${{ secrets.GOOGLE_CREDENTIALS }}" \
+          -var="project=${{ secrets.GCP_PROJECT_ID }}" \
+          -var="region=${{ secrets.GCP_REGION }}" \
+          -auto-approve
